@@ -11,6 +11,10 @@ This is my personal photography business website
 - **Styling**: Tailwind CSS
 - **Deployment**: Cloudflare Pages
 
+## Fonts
+
+- **Untitled Sans**: [Klim Type Foundry](https://klim.co.nz/retail-fonts/untitled-sans)
+
 ## Development
 
 Run the dev server:
