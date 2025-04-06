@@ -1,5 +1,5 @@
 import { NavLink } from '@remix-run/react';
-import { Logo } from '.';
+import { Logo, ThemeSwitch } from '~/components/ui';
 import { classNames as cn } from '~/utils';
 
 const links = [
@@ -50,25 +50,28 @@ function DesktopHeader() {
   return (
     <header className="hidden md:flex justify-between items-center h-14 border-b">
       <Logo />
-      <nav>
-        <ul className="flex">
-          {links.map(link => (
-            <NavLink
-              key={link.name}
-              to={link.href}
-              className={({ isActive }) =>
-                cn(
-                  'px-3 py-2 font-light text-sm',
-                  isActive ? 'text-active-foreground underline underline-offset-4' : undefined
-                )
-              }
-              prefetch="intent"
-            >
-              {link.name}
-            </NavLink>
-          ))}
-        </ul>
-      </nav>
+      <div className="flex">
+        <nav>
+          <ul className="flex">
+            {links.map(link => (
+              <NavLink
+                key={link.name}
+                to={link.href}
+                className={({ isActive }) =>
+                  cn(
+                    'px-3 py-2 font-light text-sm',
+                    isActive ? 'text-active-foreground underline underline-offset-4' : undefined
+                  )
+                }
+                prefetch="intent"
+              >
+                {link.name}
+              </NavLink>
+            ))}
+          </ul>
+        </nav>
+        <ThemeSwitch />
+      </div>
     </header>
   );
 }
