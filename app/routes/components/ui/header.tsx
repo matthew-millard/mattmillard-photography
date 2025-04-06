@@ -57,7 +57,10 @@ function DesktopHeader() {
               key={link.name}
               to={link.href}
               className={({ isActive }) =>
-                cn('px-3 py-2', isActive ? 'text-active-foreground underline underline-offset-4' : undefined)
+                cn(
+                  'px-3 py-2 font-light text-sm',
+                  isActive ? 'text-active-foreground underline underline-offset-4' : undefined
+                )
               }
               prefetch="intent"
             >
