@@ -2,7 +2,7 @@ import './styles/tailwind.css';
 import './styles/fonts.css';
 import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
-import { Header } from './routes/components/ui';
+import { Header } from './components/ui';
 
 export const links: LinksFunction = () => [];
 

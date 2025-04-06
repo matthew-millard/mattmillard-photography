@@ -1,5 +1,5 @@
 import { NavLink } from '@remix-run/react';
-import { Logo } from '../ui';
+import { Logo } from '.';
 import { classNames as cn } from '~/utils';
 
 const links = [
