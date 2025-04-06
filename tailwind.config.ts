@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss';
 
 export default {
   content: ['./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}'],
-  darkMode: 'class',
+  darkMode: ['class', 'class'],
   theme: {
     container: {
       center: true,
@@ -26,19 +26,10 @@ export default {
       },
       colors: {
         border: 'hsl(var(--border))',
-        input: {
-          DEFAULT: 'hsl(var(--input))',
-          invalid: 'hsl(var(--input-invalid))',
-        },
-        ring: {
-          DEFAULT: 'hsl(var(--ring))',
-          invalid: 'hsl(var(--foreground-destructive))',
-        },
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
-        foreground: {
-          DEFAULT: 'hsl(var(--foreground))',
-          destructive: 'hsl(var(--foreground-destructive))',
-        },
+        foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
@@ -71,6 +62,13 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        chart: {
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))',
+        },
       },
       borderColor: {
         DEFAULT: 'hsl(var(--border))',
@@ -82,5 +80,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwindcss-animate')],
 } satisfies Config;

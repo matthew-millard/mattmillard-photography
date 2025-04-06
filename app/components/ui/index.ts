@@ -1,4 +1,5 @@
 import Header from './header';
 import Logo from './logo';
+import ThemeSwitch from './theme-switch';
 
-export { Header, Logo };
+export { Header, Logo, ThemeSwitch };
