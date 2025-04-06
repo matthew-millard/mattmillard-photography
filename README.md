@@ -13,7 +13,7 @@ This is my personal photography business website
 
 ## Fonts
 
-- **Untitled Sans**: [Klim Type Foundary](https://klim.co.nz/retail-fonts/untitled-sans)
+- **Untitled Sans**: [Klim Type Foundry](https://klim.co.nz/retail-fonts/untitled-sans)
 
 ## Development
 
