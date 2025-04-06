@@ -1,0 +1,79 @@
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-light-italic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-regular-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-medium-italic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-bold-italic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Untitled Sans';
+  src: url('/fonts/Test Untitled Sans/test-untitled-sans-black-italic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: block;
+}
