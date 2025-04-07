@@ -2,7 +2,7 @@ import './styles/tailwind.css';
 import './styles/fonts.css';
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import { DesktopHeader, MobileHeader, Drawer } from './components/ui';
+import { DesktopHeader, MobileHeader, Drawer, DesktopFooter } from './components/ui';
 import { updateThemeActionIntent } from './components/ui/theme-switch';
 import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
@@ -46,10 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <body>
         <Drawer {...drawerState} />
-        <div className="container">
+        <div className="container min-h-screen flex flex-col">
           <MobileHeader {...drawerState} />
           <DesktopHeader />
-          {children}
+          <main className="flex-1">{children}</main>
+          <DesktopFooter />
           <ScrollRestoration />
           <Scripts />
         </div>

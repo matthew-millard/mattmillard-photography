@@ -40,8 +40,8 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 
 export default function ContactRoute() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <section>
       <h1>Contact route</h1>
-    </div>
+    </section>
   );
 }
