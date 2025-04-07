@@ -2,10 +2,11 @@ import './styles/tailwind.css';
 import './styles/fonts.css';
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import { Header } from './components/ui';
+import { DesktopHeader, MobileHeader, Drawer } from './components/ui';
 import { updateThemeActionIntent } from './components/ui/theme-switch';
 import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
+import { useState } from 'react';
 
 export const links: LinksFunction = () => [];
 
@@ -26,6 +27,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const drawerState = { isDrawerOpen, setIsDrawerOpen };
   const theme = useTheme();
 
   return (
@@ -40,11 +43,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background text-foreground container">
-        <Header />
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+
+      <body>
+        <Drawer {...drawerState} />
+        <div className="container">
+          <MobileHeader {...drawerState} />
+          <DesktopHeader />
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </div>
       </body>
     </html>
   );

@@ -1,9 +1,13 @@
 import { Link } from '@remix-run/react';
 
-export default function Logo() {
+interface LogoProps {
+  fontSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+}
+
+export default function Logo({ fontSize = 'lg' }: LogoProps) {
   return (
     <Link to="/" prefetch="intent">
-      <span className="text-lg">Matt Millard Photography</span>
+      <span className={`text-${fontSize}`}>Matt Millard Photography</span>
     </Link>
   );
 }
