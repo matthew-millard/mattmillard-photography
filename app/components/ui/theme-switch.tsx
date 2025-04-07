@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useTheme } from '~/hooks';
 import { useFetcher } from '@remix-run/react';
-import { Button } from '~/components/ui';
+import { Button, Tooltip } from '~/components/ui';
 import { Moon, Sun } from 'lucide-react';
 
 export type Theme = 'light' | 'dark';
@@ -22,10 +22,12 @@ export default function ThemeSwitch() {
   return (
     <fetcher.Form action="/" method="POST">
       <input type="hidden" name="theme" value={nextMode} />
-      <Button type="submit" variant={'ghost'} size={'icon'} name="intent" value={updateThemeActionIntent}>
-        {icon}
-        <span className="sr-only">Toggle theme</span>
-      </Button>
+      <Tooltip label={`Switch to ${nextMode} theme`} side="bottom">
+        <Button type="submit" variant={'ghost'} size={'icon'} name="intent" value={updateThemeActionIntent}>
+          {icon}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </Tooltip>
     </fetcher.Form>
   );
 }
