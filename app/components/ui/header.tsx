@@ -1,5 +1,7 @@
 import { NavLink } from '@remix-run/react';
-import { Logo, ThemeSwitch } from '~/components/ui';
+import { X, Menu } from 'lucide-react';
+import { Dispatch, SetStateAction } from 'react';
+import { Button, Logo, ThemeSwitch } from '~/components/ui';
 import { classNames as cn } from '~/utils';
 
 const links = [
@@ -33,17 +35,34 @@ const links = [
   },
 ];
 
-export default function Header() {
+type DrawerState = {
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function Header({ isDrawerOpen, setIsDrawerOpen }: DrawerState) {
+  const drawerState = { isDrawerOpen, setIsDrawerOpen };
   return (
     <div>
-      <MobileHeader />
+      <MobileHeader {...drawerState} />
       <DesktopHeader />
     </div>
   );
 }
 
-function MobileHeader() {
-  return <header className="md:hidden">This is mobile</header>;
+function MobileHeader({ isDrawerOpen, setIsDrawerOpen }: DrawerState) {
+  const icon = isDrawerOpen ? <X /> : <Menu />;
+  return (
+    <header className="md:hidden flex justify-between items-center h-16 border-b">
+      <Logo fontSize="sm" />
+      <div className="grid grid-cols-2 gap-2">
+        <ThemeSwitch />
+        <Button type="button" variant={'outline'} size={'icon'} onClick={() => setIsDrawerOpen(!isDrawerOpen)}>
+          {icon}
+        </Button>
+      </div>
+    </header>
+  );
 }
 
 function DesktopHeader() {

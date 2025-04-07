@@ -6,6 +6,7 @@ import { Header } from './components/ui';
 import { updateThemeActionIntent } from './components/ui/theme-switch';
 import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
+import { useState } from 'react';
 
 export const links: LinksFunction = () => [];
 
@@ -27,6 +28,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useTheme();
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const drawerState = { isDrawerOpen, setIsDrawerOpen };
 
   return (
     <html lang="en" className={`${theme}`}>
@@ -41,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="bg-background text-foreground container">
-        <Header />
+        <Header {...drawerState} />
         {children}
         <ScrollRestoration />
         <Scripts />
