@@ -1,9 +1,9 @@
 import { DesktopHeader, MobileHeader } from './headers';
-import { DesktopFooter } from './footers';
+import Footer from './footer';
 import Drawer from './drawer';
 import Logo from './logo';
 import ThemeSwitch from './theme-switch';
 import { Button } from './button';
 import Tooltip from './tooltip';
 
-export { DesktopHeader, MobileHeader, DesktopFooter, Drawer, Logo, ThemeSwitch, Button, Tooltip };
+export { DesktopHeader, MobileHeader, Footer, Drawer, Logo, ThemeSwitch, Button, Tooltip };
