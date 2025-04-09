@@ -52,7 +52,7 @@
     "typescript": "^5.1.6",
     "vite": "^6.0.0",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.28.2"
+    "wrangler": "^4.9.1"
   },
   "engines": {
     "node": ">=20.0.0"
