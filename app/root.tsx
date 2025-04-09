@@ -31,7 +31,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
 
   const { results } = dbResponse;
-  return data({ theme, results: results as unknown as Customer[] });
+
+  return data({ theme, results });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -71,7 +72,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <DesktopHeader />
           {customers &&
             customers.length > 0 &&
-            customers.map((customer: Customer) => (
+            customers.map(customer => (
               <p key={customer.CustomerId}>
                 {customer.CustomerId}: {customer.ContactName} - {customer.CompanyName}
               </p>
