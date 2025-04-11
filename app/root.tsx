@@ -8,11 +8,11 @@ import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
 import { useState } from 'react';
 
-interface Customer {
-  CustomerId: string;
-  ContactName: string;
-  CompanyName: string;
-}
+// interface Customer {
+//   CustomerId: string;
+//   ContactName: string;
+//   CompanyName: string;
+// }
 
 export const links: LinksFunction = () => [];
 
@@ -20,9 +20,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const theme = getThemeFromCookie(request);
 
   const { env } = context.cloudflare;
-  const companyNameToQuery = 'Bs Beverages';
-  const ps = env.DB.prepare('SELECT * FROM Customers WHERE CompanyName=?').bind(companyNameToQuery);
-  const dbResponse = await ps.all();
+  const preparedStatement = env.DB.prepare('SELECT * FROM Images');
+  const dbResponse = await preparedStatement.all();
+
+  console.log('dbResponse', dbResponse);
 
   if (!dbResponse.success) {
     throw new Response('Yikes! Server error :(', {
@@ -47,7 +48,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { results: customers } = useLoaderData<typeof loader>();
+  const { results: images } = useLoaderData<typeof loader>();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const drawerState = { isDrawerOpen, setIsDrawerOpen };
   const theme = useTheme();
@@ -70,11 +71,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="container min-h-screen flex flex-col">
           <MobileHeader {...drawerState} />
           <DesktopHeader />
-          {customers &&
-            customers.length > 0 &&
-            customers.map(customer => (
-              <p key={customer.CustomerId}>
-                {customer.CustomerId}: {customer.ContactName} - {customer.CompanyName}
+          {images &&
+            images.length > 0 &&
+            images.map(image => (
+              <p key={image.id}>
+                {image.title}: {image.imageUrl} - {image.altText}
               </p>
             ))}
           <main className="flex-1">{children}</main>
