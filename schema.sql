@@ -1,3 +1,19 @@
-DROP TABLE IF EXISTS Customers;
-CREATE TABLE IF NOT EXISTS Customers (CustomerId INTEGER PRIMARY KEY, CompanyName TEXT, ContactName TEXT);
-INSERT INTO Customers (CustomerID, CompanyName, ContactName) VALUES (1, 'Alfreds Futterkiste', 'Maria Anders'), (4, 'Around the Horn', 'Thomas Hardy'), (11, 'Bs Beverages', 'Victoria Ashworth'), (13, 'Bs Beverages', 'Random Name');
+-- Drop existing tables and triggers
+DROP TRIGGER IF EXISTS update_images_timestamp;
+DROP TABLE IF EXISTS images;
+
+CREATE TABLE images(
+    id TEXT PRIMARY KEY,
+    url TEXT NOT NULL,
+    alt_text TEXT,
+    category TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER update_images_timestamp 
+AFTER UPDATE ON images
+BEGIN
+  UPDATE images SET updated_at = CURRENT_TIMESTAMP
+  WHERE id = NEW.id;
+END;
