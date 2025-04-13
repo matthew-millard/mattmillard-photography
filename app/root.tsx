@@ -1,39 +1,19 @@
 import './styles/tailwind.css';
 import './styles/fonts.css';
 import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
-import { data, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react';
+import { data, Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import { DesktopHeader, MobileHeader, Drawer, Footer } from './components/ui';
 import { updateThemeActionIntent } from './components/ui/theme-switch';
 import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
 import { useState } from 'react';
 
-// interface Customer {
-//   CustomerId: string;
-//   ContactName: string;
-//   CompanyName: string;
-// }
-
 export const links: LinksFunction = () => [];
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const theme = getThemeFromCookie(request);
 
-  const { env } = context.cloudflare;
-  const preparedStatement = env.DB.prepare('SELECT * FROM Images');
-  const dbResponse = await preparedStatement.all();
-
-  console.log('dbResponse', dbResponse);
-
-  if (!dbResponse.success) {
-    throw new Response('Yikes! Server error :(', {
-      status: 500,
-    });
-  }
-
-  const { results } = dbResponse;
-
-  return data({ theme, results });
+  return data({ theme });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -47,8 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
       throw new Response('Invalid intent', { status: 400 });
   }
 }
-export function Layout({ children }: { children: React.ReactNode }) {
-  const { results: images } = useLoaderData<typeof loader>();
+export function Layout() {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const drawerState = { isDrawerOpen, setIsDrawerOpen };
   const theme = useTheme();
@@ -71,14 +50,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="container min-h-screen flex flex-col">
           <MobileHeader {...drawerState} />
           <DesktopHeader />
-          {images &&
-            images.length > 0 &&
-            images.map(image => (
-              <p key={image.id}>
-                {image.title}: {image.imageUrl} - {image.altText}
-              </p>
-            ))}
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <Outlet />
+          </main>
           <Footer />
           <ScrollRestoration />
           <Scripts />

@@ -1,11 +1,23 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { useLoaderData } from '@remix-run/react';
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare;
+  const { DB } = env;
+  const preparedStatement = DB.prepare(`SELECT * FROM images`);
+  // ORDER BY created_at DESC LIMIT 10
+  const dbResponse = await preparedStatement.all();
+
+  if (!dbResponse.success) {
+    throw new Error('Error gathering images from database');
+  }
+
   const MODE = env.MODE;
 
-  return { MODE };
+  const { results } = dbResponse;
+
+  return { MODE, results };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
@@ -39,9 +51,14 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 };
 
 export default function Index() {
+  const { results: images } = useLoaderData<typeof loader>();
   return (
-    <section>
-      <h1>Index route</h1>
+    <section className="flex gap-4 pt-4">
+      {images && images.length > 0 ? (
+        images.map(image => <img src={image.url} alt={image.alt} key={image.id} className="w-96 h-auto object-cover" />)
+      ) : (
+        <p>There is currently no images available</p>
+      )}
     </section>
   );
 }
