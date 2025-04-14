@@ -1,25 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
-import { Suspense } from 'react';
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
-
-export async function loader({ context }: LoaderFunctionArgs) {
-  const { env } = context.cloudflare;
-  const { DB } = env;
-  const preparedStatement = DB.prepare(`SELECT * FROM images`);
-  // ORDER BY created_at DESC LIMIT 10
-  const dbResponse = await preparedStatement.all();
-
-  if (!dbResponse.success) {
-    throw new Error('Error gathering images from database');
-  }
-
-  const MODE = env.MODE;
-
-  const { results } = dbResponse;
-
-  return { MODE, results };
-}
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -51,15 +32,53 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   ];
 };
 
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { env } = context.cloudflare;
+  const { DB } = env;
+  const preparedStatement = DB.prepare(`SELECT * FROM images`);
+  // ORDER BY created_at DESC LIMIT 10
+  const dbResponse = await preparedStatement.all();
+
+  if (!dbResponse.success) {
+    throw new Error('Error gathering images from database');
+  }
+
+  const MODE = env.MODE;
+
+  const { results } = dbResponse;
+
+  return { MODE, results };
+}
+
 export default function Index() {
   const { results: images } = useLoaderData<typeof loader>();
+
+  // const intersectionCallback = (entries, observer) => {
+  //   console.log('go ahead an load image');
+  //   entries.forEach(entry => {
+  //     entry.isIntersecting;
+  //   });
+  // };
+  // const observer = new IntersectionObserver(intersectionCallback);
+
+  // const imgElements = document.querySelectorAll('img');
+  // console.log('images', imgElements);
+  // imgElements.forEach(image => {
+  //   observer.observe(image);
+  // });
 
   return (
     <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
       {images && images.length > 0 ? (
         images.map(image => (
           <div key={image.id} className="break-inside-avoid mb-4">
-            <img src={image.url} alt={image.alt_text} className="w-full h-auto" loading="lazy" />
+            <img
+              id={image.id}
+              data-src={image.url}
+              src={image.lqip_url}
+              alt={image.alt_text}
+              className="w-full h-auto"
+            />
           </div>
         ))
       ) : (
