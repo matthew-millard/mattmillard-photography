@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
+import { Suspense } from 'react';
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export async function loader({ context }: LoaderFunctionArgs) {
@@ -52,10 +53,15 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 
 export default function Index() {
   const { results: images } = useLoaderData<typeof loader>();
+
   return (
-    <section className="flex gap-4 pt-4">
+    <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
       {images && images.length > 0 ? (
-        images.map(image => <img src={image.url} alt={image.alt} key={image.id} className="w-96 h-auto object-cover" />)
+        images.map(image => (
+          <div key={image.id} className="break-inside-avoid mb-4">
+            <img src={image.url} alt={image.alt_text} className="w-full h-auto" loading="lazy" />
+          </div>
+        ))
       ) : (
         <p>There is currently no images available</p>
       )}
