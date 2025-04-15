@@ -1,5 +1,9 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
+import { useEffect, useRef } from 'react';
+import { Image } from '~/components/ui';
+import { ImageProps } from '~/components/ui/image';
+
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
@@ -53,32 +57,12 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function Index() {
   const { results: images } = useLoaderData<typeof loader>();
 
-  // const intersectionCallback = (entries, observer) => {
-  //   console.log('go ahead an load image');
-  //   entries.forEach(entry => {
-  //     entry.isIntersecting;
-  //   });
-  // };
-  // const observer = new IntersectionObserver(intersectionCallback);
-
-  // const imgElements = document.querySelectorAll('img');
-  // console.log('images', imgElements);
-  // imgElements.forEach(image => {
-  //   observer.observe(image);
-  // });
-
   return (
     <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
       {images && images.length > 0 ? (
         images.map(image => (
           <div key={image.id} className="break-inside-avoid mb-4">
-            <img
-              id={image.id}
-              data-src={image.url}
-              src={image.lqip_url}
-              alt={image.alt_text}
-              className="w-full h-auto"
-            />
+            <Image image={image} />
           </div>
         ))
       ) : (
