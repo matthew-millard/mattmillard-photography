@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS images;
 CREATE TABLE images(
     id TEXT PRIMARY KEY,
     url TEXT NOT NULL,
+    lqip_url TEXT NOT NULL,
     alt_text TEXT,
     category TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

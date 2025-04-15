@@ -1,25 +1,10 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
-import { Suspense } from 'react';
+import { useEffect, useRef } from 'react';
+import { Image } from '~/components/ui';
+import { ImageProps } from '~/components/ui/image';
+
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
-
-export async function loader({ context }: LoaderFunctionArgs) {
-  const { env } = context.cloudflare;
-  const { DB } = env;
-  const preparedStatement = DB.prepare(`SELECT * FROM images`);
-  // ORDER BY created_at DESC LIMIT 10
-  const dbResponse = await preparedStatement.all();
-
-  if (!dbResponse.success) {
-    throw new Error('Error gathering images from database');
-  }
-
-  const MODE = env.MODE;
-
-  const { results } = dbResponse;
-
-  return { MODE, results };
-}
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -51,6 +36,24 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   ];
 };
 
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { env } = context.cloudflare;
+  const { DB } = env;
+  const preparedStatement = DB.prepare(`SELECT * FROM images`);
+  // ORDER BY created_at DESC LIMIT 10
+  const dbResponse = await preparedStatement.all();
+
+  if (!dbResponse.success) {
+    throw new Error('Error gathering images from database');
+  }
+
+  const MODE = env.MODE;
+
+  const { results } = dbResponse;
+
+  return { MODE, results };
+}
+
 export default function Index() {
   const { results: images } = useLoaderData<typeof loader>();
 
@@ -59,7 +62,7 @@ export default function Index() {
       {images && images.length > 0 ? (
         images.map(image => (
           <div key={image.id} className="break-inside-avoid mb-4">
-            <img src={image.url} alt={image.alt_text} className="w-full h-auto" loading="lazy" />
+            <Image image={image} />
           </div>
         ))
       ) : (

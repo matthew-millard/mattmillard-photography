@@ -39,10 +39,11 @@ export async function uploadToCloudflareImages(file: File, accountId: string, ap
   });
 
   const data: CloudflareImagesResponse = await response.json();
+  console.log('data', data);
 
   if (!response.ok) {
     throw new Error(`Upload failed: ${response.statusText}`);
   }
 
-  return { url: data.result.variants[0] };
+  return data;
 }

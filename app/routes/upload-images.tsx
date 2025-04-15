@@ -58,18 +58,21 @@ export async function action({ request, context }: ActionFunctionArgs) {
   // const uploadResults = [];
 
   for (const file of files) {
-    const { url } = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
+    const data = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
       metadata: { category: category as Categories, altText },
     });
 
+    const url = data.result.variants.find(str => str.endsWith('public'));
+    const lqip_url = data.result.variants.find(str => str.endsWith('placeholder'));
+
+    console.log('url', url);
+    console.log('lqip_url', lqip_url);
+
     // Store metadata in D1
     const { DB } = context.cloudflare.env;
-    const preparedStatement = DB.prepare(`INSERT INTO images (id, url, category, alt_text) VALUES (?,?,?,?)`).bind(
-      crypto.randomUUID(),
-      url,
-      category,
-      altText ?? null
-    );
+    const preparedStatement = DB.prepare(
+      `INSERT INTO images (id, url, lqip_url, category, alt_text) VALUES (?,?,?,?,?)`
+    ).bind(crypto.randomUUID(), url, lqip_url, category, altText ?? null);
 
     const dbResponse = await preparedStatement.run();
 
