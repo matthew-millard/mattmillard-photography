@@ -1,8 +1,16 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
 import { Image } from '~/components/ui';
-import { ImageProps } from '~/components/ui/image';
+
+export interface ImageRecord {
+  id: string;
+  url: string;
+  lqip_url: string;
+  alt_text: string;
+  category: string;
+  created_at: string;
+  updated_at: string;
+}
 
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
@@ -39,9 +47,9 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 export async function loader({ context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare;
   const { DB } = env;
-  const preparedStatement = DB.prepare(`SELECT * FROM images`);
+  const preparedStatement = DB.prepare(`SELECT * FROM images ORDER BY created_at DESC`);
   // ORDER BY created_at DESC LIMIT 10
-  const dbResponse = await preparedStatement.all();
+  const dbResponse = await preparedStatement.all<ImageRecord>();
 
   if (!dbResponse.success) {
     throw new Error('Error gathering images from database');

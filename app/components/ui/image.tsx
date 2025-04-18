@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInViewPort } from '~/hooks';
 import { cn } from '~/lib/utils';
+import { ImageRecord } from '~/routes/_index';
 
-export interface ImageProps {
-  id: string;
-  url: string;
-  lqip_url: string;
-  alt_text: string;
-}
+export interface ImageProps extends ImageRecord {}
 
 export default function Image({ image }: { image: ImageProps }) {
   const targetRef = useRef<HTMLImageElement>(null);
@@ -32,7 +28,7 @@ export default function Image({ image }: { image: ImageProps }) {
       data-src={image.url}
       id={image.id}
       src={image.lqip_url}
-      alt={image.alt_text}
+      alt={image.alt_text ?? undefined}
       className={cn(
         'w-full h-auto transition-all duration-700 ease-out transform',
         hasBeenInViewPort ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-70'
