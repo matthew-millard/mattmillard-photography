@@ -1,4 +1,5 @@
-import useTheme from './theme';
-import useInViewPort from './in-viewport';
+import useTheme from './use-theme';
+import useInViewPort from './use-in-viewport';
+import { useHydrated } from './use-hydrated';
 
-export { useTheme, useInViewPort };
+export { useTheme, useInViewPort, useHydrated };

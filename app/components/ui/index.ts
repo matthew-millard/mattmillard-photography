@@ -9,6 +9,9 @@ import Image from './image';
 import { Input } from './input';
 import { Label } from './label';
 import { Textarea } from './textarea';
+import { ClientOnly } from './client-only';
+import { Turnstile, TurnstileFallback } from './turnstile';
+import FieldError from './field-error';
 
 export {
   DesktopHeader,
@@ -23,4 +26,8 @@ export {
   Input,
   Label,
   Textarea,
+  ClientOnly,
+  Turnstile,
+  TurnstileFallback,
+  FieldError,
 };
