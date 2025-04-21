@@ -12,6 +12,7 @@ import { Textarea } from './textarea';
 import { ClientOnly } from './client-only';
 import { Turnstile, TurnstileFallback } from './turnstile';
 import FieldError from './field-error';
+import FormErrors from './form-errors';
 
 export {
   DesktopHeader,
@@ -30,4 +31,5 @@ export {
   Turnstile,
   TurnstileFallback,
   FieldError,
+  FormErrors,
 };
