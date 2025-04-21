@@ -7,6 +7,7 @@ import { updateThemeActionIntent } from './components/ui/theme-switch';
 import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
 import { useState } from 'react';
+import { ExternalScripts } from './components/remix-utils/external-scripts';
 
 export const links: LinksFunction = () => [];
 
@@ -41,7 +42,6 @@ export function Layout() {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
         <Meta />
         <Links />
       </head>
@@ -56,6 +56,7 @@ export function Layout() {
           </main>
           <Footer />
           <ScrollRestoration />
+          <ExternalScripts />
           <Scripts />
         </div>
       </body>
