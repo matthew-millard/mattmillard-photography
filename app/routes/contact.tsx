@@ -4,6 +4,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from '@remix-run
 import { data, useActionData, useFetcher, useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
 import { z } from 'zod';
+import { ExternalScriptsHandle } from '~/components/remix-utils/external-scripts';
 import {
   Button,
   ClientOnly,
@@ -40,6 +41,16 @@ const ContactFormSchema = z.object({
     .max(1000, { message: 'Must be 1000 characters or less' }),
   [CF_TURNSTILE_KEY]: z.string().optional(),
 });
+
+export const handle: ExternalScriptsHandle = {
+  scripts: [
+    {
+      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js',
+      async: true,
+      defer: true,
+    },
+  ],
+};
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { MODE, CLOUDFLARE_TURNSTILE_SITE_KEY } = context.cloudflare.env;
