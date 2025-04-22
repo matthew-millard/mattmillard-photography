@@ -1,7 +1,7 @@
 import { getFormProps, getInputProps, getTextareaProps, type SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
-import { data, useActionData, useFetcher, useLoaderData } from '@remix-run/react';
+import { useActionData, useFetcher, useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
 import { z } from 'zod';
 import { ExternalScriptsHandle } from '~/components/remix-utils/external-scripts';
@@ -14,7 +14,7 @@ import {
   Label,
   Textarea,
   Turnstile,
-  TurnstileFallback,
+  // TurnstileFallback,
 } from '~/components/ui';
 import { Theme } from '~/components/ui/theme-switch';
 import { useIsPending, useTheme, useFormReset } from '~/hooks';
@@ -72,15 +72,20 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const { [CF_TURNSTILE_KEY]: turnstileToken } = submission.value;
   console.log('turnstileToken', turnstileToken);
   const { MODE, CLOUDFLARE_TURNSTILE_SECRET_KEY } = context.cloudflare.env;
+  const isProduction = MODE === 'production';
 
   const dummySecretKey = '1x0000000000000000000000000000000AA';
-  const secretKey = MODE === 'production' ? CLOUDFLARE_TURNSTILE_SECRET_KEY : dummySecretKey;
+  const secretKey = isProduction ? CLOUDFLARE_TURNSTILE_SECRET_KEY : dummySecretKey;
 
   // Validate the token by calling the
   // "/siteverify" API endpoint.
   const body = new FormData();
   body.append('secret', secretKey);
   body.append('response', turnstileToken as string);
+  if (isProduction) {
+    const ip = request.headers.get('CF-Connecting-IP');
+    body.append('remoteip', ip as string);
+  }
 
   const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
   const result = await fetch(url, {
@@ -90,12 +95,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const outcome: SiteVerifyResponse = await result.json();
 
+  console.log('outcome', outcome);
+
   // I need to provide better error handling here!
   if (!outcome.success) {
-    return data(submission.reply({ formErrors: [...outcome['error-codes']] }), {
-      status: 400,
-    });
+    // return data(submission.reply({ formErrors: [...outcome['error-codes']] }), {
+    //   status: 400,
+    // });
+    return new Response('The provided Turnstile token was not valid! \n' + JSON.stringify(outcome));
   }
+
+  // Continue on with app logic
 
   return { ok: true };
 }
@@ -167,9 +177,7 @@ export default function ContactRoute() {
                   </div>
 
                   {/* Cloudflare Implicit Turnstile widget */}
-                  <ClientOnly fallback={<TurnstileFallback />}>
-                    {() => <Turnstile siteKey={siteKey} theme={theme} />}
-                  </ClientOnly>
+                  <ClientOnly>{() => <Turnstile siteKey={siteKey} theme={theme} />}</ClientOnly>
 
                   <Button variant={'secondary'} className="w-full">
                     {isPending ? 'Sending...' : 'Send message'}
