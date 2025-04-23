@@ -1,18 +1,9 @@
-interface TurnstileProps {
-  siteKey: string;
-  theme?: 'auto' | 'light' | 'dark';
-}
+import { LoaderCircle } from 'lucide-react';
 
-export function Turnstile({ siteKey, theme }: TurnstileProps) {
+export function TurnstileFallback() {
   return (
-    <div className="cf-turnstile h-auto w-full" data-sitekey={siteKey} data-theme={theme} data-size="flexible"></div>
+    <div className="h-[65px] w-full text-muted-foreground flex justify-center items-center">
+      <LoaderCircle className="animate-spin" />
+    </div>
   );
 }
-
-// export function TurnstileFallback() {
-//   return (
-//     <div className="cf-turnstile h-16 w-full bg-muted border border-[#eee]/50 text-muted-foreground p-4 font-medium">
-//       <small>Loading Cloudflare Turnstile...</small>
-//     </div>
-//   );
-// }

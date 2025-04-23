@@ -10,7 +10,7 @@ import { Input } from './input';
 import { Label } from './label';
 import { Textarea } from './textarea';
 import { ClientOnly } from './client-only';
-import { Turnstile } from './turnstile';
+import { TurnstileFallback } from './turnstile';
 import FieldError from './field-error';
 import FormErrors from './form-errors';
 
@@ -28,8 +28,7 @@ export {
   Label,
   Textarea,
   ClientOnly,
-  Turnstile,
-  // TurnstileFallback,
+  TurnstileFallback,
   FieldError,
   FormErrors,
 };
