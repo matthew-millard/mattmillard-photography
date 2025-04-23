@@ -4,28 +4,13 @@ import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from '@remix-run
 import { useActionData, useFetcher, useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
 import { z } from 'zod';
-import { ExternalScriptsHandle } from '~/components/remix-utils/external-scripts';
-import {
-  Button,
-  ClientOnly,
-  FieldError,
-  FormErrors,
-  Input,
-  Label,
-  Textarea,
-  Turnstile,
-  // TurnstileFallback,
-} from '~/components/ui';
+import { Button, ClientOnly, FieldError, FormErrors, Input, Label, Textarea, TurnstileFallback } from '~/components/ui';
 import { Theme } from '~/components/ui/theme-switch';
 import { useIsPending, useTheme, useFormReset } from '~/hooks';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
+import { Turnstile, TurnstileServerValidationResponse } from '@marsidev/react-turnstile';
 
 const CF_TURNSTILE_KEY = 'cf-turnstile-response';
-
-interface SiteVerifyResponse {
-  success: boolean;
-  'error-codes': string[];
-}
 
 const ContactFormSchema = z.object({
   name: z
@@ -41,16 +26,6 @@ const ContactFormSchema = z.object({
     .max(1000, { message: 'Must be 1000 characters or less' }),
   [CF_TURNSTILE_KEY]: z.string().optional(),
 });
-
-export const handle: ExternalScriptsHandle = {
-  scripts: [
-    {
-      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js',
-      async: true,
-      defer: true,
-    },
-  ],
-};
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { MODE, CLOUDFLARE_TURNSTILE_SITE_KEY } = context.cloudflare.env;
@@ -93,15 +68,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
     method: 'POST',
   });
 
-  const outcome: SiteVerifyResponse = await result.json();
+  const outcome: TurnstileServerValidationResponse = await result.json();
 
   console.log('outcome', outcome);
 
-  // I need to provide better error handling here!
   if (!outcome.success) {
-    // return data(submission.reply({ formErrors: [...outcome['error-codes']] }), {
-    //   status: 400,
-    // });
     return new Response('The provided Turnstile token was not valid! \n' + JSON.stringify(outcome));
   }
 
@@ -176,8 +147,12 @@ export default function ContactRoute() {
                     <FieldError errors={fields.message.errors} />
                   </div>
 
-                  {/* Cloudflare Implicit Turnstile widget */}
-                  <ClientOnly>{() => <Turnstile siteKey={siteKey} theme={theme} />}</ClientOnly>
+                  {/* Cloudflare Turnstile widget */}
+                  <div className="pb-4">
+                    <ClientOnly fallback={<TurnstileFallback />}>
+                      {() => <Turnstile siteKey={siteKey} options={{ size: 'flexible', theme }} />}
+                    </ClientOnly>
+                  </div>
 
                   <Button variant={'secondary'} className="w-full">
                     {isPending ? 'Sending...' : 'Send message'}
