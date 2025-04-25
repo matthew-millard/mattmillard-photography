@@ -9,7 +9,14 @@ This is my personal photography business website
 - **Framework**: Remix
 - **Language**: Typescript
 - **Styling**: Tailwind CSS
+- **UI Components**: Radix + Shadcn + Custom
 - **Deployment**: Cloudflare Pages
+- **Database**: Cloudflare D1
+- **Email**: SendGrid + Cloudflare Email routing
+- **File host**: Cloudflare Images
+- **Security**: Cloudflare Turnstile
+- **Form**: Conform
+- **Validation**: Zod
 
 ## Fonts
 

@@ -9,8 +9,12 @@ import { Theme } from '~/components/ui/theme-switch';
 import { useIsPending, useTheme, useFormReset } from '~/hooks';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 import { Turnstile, TurnstileServerValidationResponse } from '@marsidev/react-turnstile';
+import MailJet from 'node-mailjet';
 
 const CF_TURNSTILE_KEY = 'cf-turnstile-response';
+const MY_EMAIL = 'contact@mattmillard.photography';
+const MY_BUSINESS_NAME = 'Matt Millard Photography';
+const MY_NAME = 'Matt Millard';
 
 const ContactFormSchema = z.object({
   name: z
@@ -44,9 +48,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
     });
   }
 
-  const { [CF_TURNSTILE_KEY]: turnstileToken } = submission.value;
+  const { [CF_TURNSTILE_KEY]: turnstileToken, email, message, name } = submission.value;
   console.log('turnstileToken', turnstileToken);
-  const { MODE, CLOUDFLARE_TURNSTILE_SECRET_KEY } = context.cloudflare.env;
+  const { MODE, CLOUDFLARE_TURNSTILE_SECRET_KEY, MAILJET_API_KEY, MAILJET_SECRET_KEY } = context.cloudflare.env;
   const isProduction = MODE === 'production';
 
   const dummySecretKey = '1x0000000000000000000000000000000AA';
@@ -77,6 +81,51 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   // Continue on with app logic
+  const mailJet = new MailJet({
+    apiKey: MAILJET_API_KEY,
+    apiSecret: MAILJET_SECRET_KEY,
+  });
+
+  try {
+    const emailResponse = await mailJet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: MY_EMAIL,
+            Name: MY_BUSINESS_NAME,
+          },
+          To: [
+            {
+              Email: MY_EMAIL,
+              Name: MY_BUSINESS_NAME,
+            },
+          ],
+          Subject: `Message from ${name}`,
+          TextPart: `You received a message from ${name}: ${message}. Their email is ${email}.`,
+        },
+        {
+          From: {
+            Email: MY_EMAIL,
+            Name: MY_BUSINESS_NAME,
+          },
+          To: [{ Email: email, Name: name }],
+          Subject: 'Thank you for your message',
+          TextPart: `Hi ${name},\n\nThank you for reaching out. I've received your message and will get back to you as soon as possible.\n\nIf you have any urgent enquiries, please don't hesitate to contact me directly at ${MY_EMAIL}.\n\nBest regards,\n${MY_NAME}`,
+          HTMLPart: `
+            <h3>Thank you for your message</h3>
+            <p>Hi ${name},</p>
+            <p>Thank you for reaching out. I've received your message and will get back to you as soon as possible.</p>
+            <p>If you have any urgent enquiries, please don't hesitate to contact me directly at ${MY_EMAIL}.</p>
+            <p>Best regards,<br>${MY_NAME}<br></p>
+          `,
+        },
+      ],
+    });
+    console.log('email response body', emailResponse.body);
+    console.log('email response', emailResponse.body);
+  } catch (error) {
+    console.error(error);
+  }
 
   return { ok: true };
 }
@@ -106,7 +155,7 @@ export default function ContactRoute() {
 
   return (
     <div>
-      <div className="py-4 md:py-20">
+      <div className="py-4 md:py-12">
         <div className="mx-auto w-full sm:max-w-3xl">
           <div className="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
             <div className="grid md:grid-cols-2">
