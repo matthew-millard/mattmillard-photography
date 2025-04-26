@@ -1,11 +1,11 @@
 import { redirect } from '@remix-run/cloudflare';
-import { adminAuthSessionStorage } from './sessions';
+import { adminSessionKey, adminSessionStorage } from './sessions';
 
 export async function getAdminId(request: Request) {
   const cookieHeader = request.headers.get('Cookie');
-  const adminSession = await adminAuthSessionStorage.getSession(cookieHeader);
+  const adminSession = await adminSessionStorage.getSession(cookieHeader);
 
-  const adminId = adminSession.get('adminId'); // make a const, no to magic strings
+  const adminId = adminSession.get(adminSessionKey);
   return adminId;
 }
 
@@ -16,11 +16,13 @@ export async function requireAdmin(request: Request, DB: D1Database) {
     throw redirect('/admin/login');
   }
 
-  const admin = await DB.prepare(`SELECT * FROM admins WHERE id=${adminId}`).first();
+  const ps = DB.prepare(`SELECT * FROM admins WHERE id = ?`).bind(adminId);
+
+  const admin = await ps.first();
 
   if (!admin) {
-    throw redirect('/admin/login');
+    throw new Response('Not authorised', { status: 401 });
   }
 
-  return admin;
+  return;
 }

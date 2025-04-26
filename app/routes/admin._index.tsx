@@ -3,8 +3,7 @@ import { requireAdmin } from '~/.server/auth';
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { DB } = context.cloudflare.env;
-  const admin = await requireAdmin(request, DB);
-  console.log('admin', admin);
+  await requireAdmin(request, DB);
   return {};
 }
 
