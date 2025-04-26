@@ -1,8 +1,9 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { ActionFunctionArgs } from '@remix-run/cloudflare';
+import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { data, Form, redirect, useActionData } from '@remix-run/react';
 import { z } from 'zod';
+import { requireAnonymous } from '~/.server/auth';
 import { adminSessionKey, adminSessionStorage } from '~/.server/sessions';
 import { Button, Input, Label } from '~/components/ui';
 import { verifyPassword } from '~/utils/hash-password';
@@ -11,6 +12,11 @@ const AdminLoginSchema = z.object({
   email: z.string().email(),
   password: z.string().trim().min(1).max(25),
 });
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  await requireAnonymous(request);
+  return {};
+}
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { DB } = context.cloudflare.env;

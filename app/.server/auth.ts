@@ -26,3 +26,15 @@ export async function requireAdmin(request: Request, DB: D1Database) {
 
   return;
 }
+
+export async function requireAnonymous(request: Request) {
+  const cookieHeader = request.headers.get('Cookie');
+  const adminSession = await adminSessionStorage.getSession(cookieHeader);
+  const isAdmin = adminSession.has(adminSessionKey);
+
+  if (isAdmin) {
+    throw redirect('/admin');
+  }
+
+  return;
+}
