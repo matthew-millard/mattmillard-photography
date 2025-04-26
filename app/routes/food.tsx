@@ -1,9 +1,23 @@
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { H1, P } from '~/components/typography';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
+import { ImageRecord } from './_index';
+import { useLoaderData } from '@remix-run/react';
+import { Image } from '~/components/ui';
 
 export async function loader({ context }: LoaderFunctionArgs) {
-  const { MODE } = context.cloudflare.env;
-  return { MODE };
+  const { MODE, DB } = context.cloudflare.env;
+
+  const ps = DB.prepare(`SELECT * FROM images WHERE category = ?`).bind('food');
+  const dbResponse = await ps.all<ImageRecord>();
+
+  if (!dbResponse.success) {
+    throw new Error('Error gathering images from database');
+  }
+
+  const { results } = dbResponse;
+
+  return { MODE, results };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
@@ -38,9 +52,24 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 };
 
 export default function FoodRoute() {
+  const { results: images } = useLoaderData<typeof loader>();
   return (
-    <section>
-      <h1>Food route</h1>
-    </section>
+    <div>
+      <div className="py-2">
+        <H1>Food</H1>
+        <P className="text-muted-foreground">A collection of photos taken in restaurant</P>
+      </div>
+      <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
+        {images && images.length > 0 ? (
+          images.map(image => (
+            <div key={image.id} className="break-inside-avoid mb-4">
+              <Image image={image} />
+            </div>
+          ))
+        ) : (
+          <p>There is currently no images available</p>
+        )}
+      </section>
+    </div>
   );
 }
