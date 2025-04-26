@@ -6,17 +6,16 @@ This is my personal photography business website
 
 ## Tech stack
 
-- **Framework**: Remix
+- **Framework**: React w/Remix
 - **Language**: Typescript
 - **Styling**: Tailwind CSS
-- **UI Components**: Radix + Shadcn + Custom
+- **UI Components**: Custom + Radix + Shadcn
 - **Deployment**: Cloudflare Pages
 - **Database**: Cloudflare D1
-- **Email**: SendGrid + Cloudflare Email routing
+- **Email**: Cloudflare Email routing + MailJet
 - **File host**: Cloudflare Images
-- **Security**: Cloudflare Turnstile
-- **Form**: Conform
-- **Validation**: Zod
+- **Spambot protection**: Cloudflare Turnstile + Honeypots
+- **Form validation**: Zod + Conform
 
 ## Fonts
 
