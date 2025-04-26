@@ -8,13 +8,15 @@ import { getThemeFromCookie, updateTheme } from './.server/theme';
 import { useTheme } from './hooks';
 import { useState } from 'react';
 import { ExternalScripts } from './components/remix-utils/external-scripts';
+import { getAdminId } from './.server/auth';
 
 export const links: LinksFunction = () => [];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const theme = getThemeFromCookie(request);
+  const isAdmin = (await getAdminId(request)) ? true : false;
 
-  return data({ theme });
+  return data({ theme, isAdmin });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
