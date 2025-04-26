@@ -53,7 +53,7 @@ export function Layout() {
         <div className="container min-h-screen flex flex-col">
           <MobileHeader {...drawerState} />
           <DesktopHeader />
-          <main className="flex-1">
+          <main className="flex-1 py-4">
             <Outlet />
           </main>
           <Footer />

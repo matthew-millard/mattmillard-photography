@@ -5,7 +5,8 @@ import { data, Form, redirect, useActionData } from '@remix-run/react';
 import { z } from 'zod';
 import { requireAnonymous } from '~/.server/auth';
 import { adminSessionKey, adminSessionStorage } from '~/.server/sessions';
-import { Button, Input, Label } from '~/components/ui';
+import { Button, FieldError, FormErrors, Input, Label } from '~/components/ui';
+import { cn } from '~/lib/utils';
 import { verifyPassword } from '~/utils/hash-password';
 
 const AdminLoginSchema = z.object({
@@ -79,19 +80,39 @@ export default function AdminLoginRoute() {
     },
   });
 
+  const hasErrors = form.errors && form.errors.length > 0 ? true : false;
+
   return (
-    <Form method="POST" {...getFormProps(form)}>
-      <div>
-        <Label htmlFor={fields.email.id}>Email</Label>
-        <Input {...getInputProps(fields.email, { type: 'email' })} autoFocus />
+    <div
+      className={cn(
+        'my-4 md:my-12 mx-auto pt-7 pb-4 px-6 max-w-md rounded-lg space-y-6 shadow border',
+        hasErrors ? 'border-destructive' : ''
+      )}
+    >
+      <div className="grid gap-2">
+        <h1 className="text-2xl font-bold">Admin Login</h1>
+        <p className="text-balance text-muted-foreground">Log in to access your admin dashboard</p>
       </div>
-      <div>
-        <Label htmlFor={fields.password.id}>Password</Label>
-        <Input {...getInputProps(fields.password, { type: 'password' })} />
-      </div>
-      <Button type="submit" variant={'secondary'}>
-        Log in
-      </Button>
-    </Form>
+      <Form method="POST" {...getFormProps(form)} className="space-y-3">
+        <div className="grid gap-2">
+          <Label htmlFor={fields.email.id}>Email</Label>
+          <Input {...getInputProps(fields.email, { type: 'email' })} autoFocus />
+          <FieldError errors={fields.email.errors} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor={fields.password.id}>Password</Label>
+          <Input {...getInputProps(fields.password, { type: 'password' })} />
+          <FieldError errors={fields.password.errors} />
+        </div>
+        <Button
+          type="submit"
+          variant={'secondary'}
+          className={cn('w-full', hasErrors ? 'outline outline-destructive' : '')}
+        >
+          Log in
+        </Button>
+        <FormErrors errors={form.errors} />
+      </Form>
+    </div>
   );
 }
