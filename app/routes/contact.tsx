@@ -125,6 +125,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     });
 
     const emailResult = await emailResponse.json();
+    console.log('email response', emailResult);
   } catch (error) {
     console.error(error);
     return new Response('Failed to send email', { status: 500 });
