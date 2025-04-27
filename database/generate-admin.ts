@@ -1,6 +1,6 @@
 import { hashPassword } from '../app/utils';
 
-// Run the script, grab the results from the console and use them in the seed.sql to insert a new admin
+// Run the script, grab the results from the console and create a seed.sql file to insert a new admin into the database
 
 export async function generateAdmin() {
   console.log('🌱 Generating a hashed password and creating id for admin...');

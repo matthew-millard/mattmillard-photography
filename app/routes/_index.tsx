@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
+import { PageHeader } from '~/components/layout';
 import { Image } from '~/components/ui';
 
 export interface ImageRecord {
@@ -66,16 +67,21 @@ export default function Index() {
   const { results: images } = useLoaderData<typeof loader>();
 
   return (
-    <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
-      {images && images.length > 0 ? (
-        images.map(image => (
-          <div key={image.id} className="break-inside-avoid mb-4">
-            <Image image={image} />
-          </div>
-        ))
-      ) : (
-        <p>There is currently no images available</p>
-      )}
-    </section>
+    <div>
+      <section>
+        <PageHeader title="Home" description="Food, drink and hospitality photographer base in Ottawa, Canada" />
+      </section>
+      <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
+        {images && images.length > 0 ? (
+          images.map(image => (
+            <div key={image.id} className="break-inside-avoid mb-4">
+              <Image image={image} />
+            </div>
+          ))
+        ) : (
+          <p>There is currently no images available</p>
+        )}
+      </section>
+    </div>
   );
 }
