@@ -47,7 +47,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
-  const { DB } = context.cloudflare.env;
+  const { DB, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN } = context.cloudflare.env;
   await requireAdmin(request, DB);
   const uploadHandler = createMemoryUploadHandler({ maxPartSize: MAX_IMAGE_FILE_SIZE });
   const formData = await parseMultipartFormData(request, uploadHandler);
@@ -64,9 +64,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const { category, files, altText } = submission.value;
 
-  const { CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN } = context.cloudflare.env;
-  // const uploadResults = [];
-
   for (const file of files) {
     const data = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
       metadata: { category: category as Categories, altText },
@@ -74,9 +71,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     const url = data.result.variants.find(str => str.endsWith('public'));
     const lqip_url = data.result.variants.find(str => str.endsWith('placeholder'));
-
-    console.log('url', url);
-    console.log('lqip_url', lqip_url);
 
     // Store metadata in D1
     const preparedStatement = DB.prepare(

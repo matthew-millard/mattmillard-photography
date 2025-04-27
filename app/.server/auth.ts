@@ -30,8 +30,6 @@ export async function requireAdmin(request: Request, DB: D1Database) {
 
   const admin = await ps.first<Admin>();
 
-  console.log('admin', admin);
-
   if (!admin) {
     throw new Response('Not authorised', { status: 401 });
   }
