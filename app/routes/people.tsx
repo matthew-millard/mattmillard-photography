@@ -1,4 +1,5 @@
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { PageHeader } from '~/components/layout';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 
 export async function loader({ context }: LoaderFunctionArgs) {
@@ -40,7 +41,7 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 export default function PeopleRoute() {
   return (
     <section>
-      <h1>People route</h1>
+      <PageHeader title="People" description="Capturing chefs and bartenders at work" />
     </section>
   );
 }

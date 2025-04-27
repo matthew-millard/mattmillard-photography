@@ -1,4 +1,5 @@
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { PageHeader } from '~/components/layout';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 
 export async function loader({ context }: LoaderFunctionArgs) {
@@ -40,7 +41,7 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
 export default function InteriorRoute() {
   return (
     <section>
-      <h1>Interior route</h1>
+      <PageHeader title="Interior" description="A collection of stunning decor and interiors" />
     </section>
   );
 }

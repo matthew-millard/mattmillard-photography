@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
-import { H1, P } from '~/components/typography';
+import { PageHeader } from '~/components/layout';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 import { ImageRecord } from './_index';
 import { useLoaderData } from '@remix-run/react';
@@ -55,10 +55,7 @@ export default function FoodRoute() {
   const { results: images } = useLoaderData<typeof loader>();
   return (
     <div>
-      <div className="py-2">
-        <H1>Food</H1>
-        <P className="text-muted-foreground">A collection of photos taken in restaurant</P>
-      </div>
+      <PageHeader title="Food" description="A collection of photos taken in restaurant" />
       <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
         {images && images.length > 0 ? (
           images.map(image => (
