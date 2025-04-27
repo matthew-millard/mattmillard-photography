@@ -1,4 +1,4 @@
-import { type Categories } from '~/routes/upload-images';
+import { type Categories } from '~/routes/admin.upload-images';
 
 interface Options {
   metadata?: {
