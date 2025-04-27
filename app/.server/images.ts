@@ -1,4 +1,4 @@
-import { type Categories } from '~/routes/upload-images';
+import { type Categories } from '~/routes/admin.upload-images';
 
 interface Options {
   metadata?: {
@@ -39,7 +39,6 @@ export async function uploadToCloudflareImages(file: File, accountId: string, ap
   });
 
   const data: CloudflareImagesResponse = await response.json();
-  console.log('data', data);
 
   if (!response.ok) {
     throw new Error(`Upload failed: ${response.statusText}`);

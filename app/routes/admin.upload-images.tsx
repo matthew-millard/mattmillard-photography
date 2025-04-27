@@ -4,9 +4,11 @@ import {
   ActionFunctionArgs,
   unstable_parseMultipartFormData as parseMultipartFormData,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  LoaderFunctionArgs,
 } from '@remix-run/cloudflare';
 import { Form } from '@remix-run/react';
 import { z } from 'zod';
+import { requireAdmin } from '~/.server/auth';
 import { uploadToCloudflareImages } from '~/.server/images';
 import { Button } from '~/components/ui';
 
@@ -38,7 +40,15 @@ const UPLOAD_IMAGE_FILES_SCHEMA = z.object({
   altText: z.string().optional(),
 });
 
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const { DB } = context.cloudflare.env;
+  await requireAdmin(request, DB);
+  return {};
+}
+
 export async function action({ request, context }: ActionFunctionArgs) {
+  const { DB, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN } = context.cloudflare.env;
+  await requireAdmin(request, DB);
   const uploadHandler = createMemoryUploadHandler({ maxPartSize: MAX_IMAGE_FILE_SIZE });
   const formData = await parseMultipartFormData(request, uploadHandler);
 
@@ -54,9 +64,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const { category, files, altText } = submission.value;
 
-  const { CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN } = context.cloudflare.env;
-  // const uploadResults = [];
-
   for (const file of files) {
     const data = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
       metadata: { category: category as Categories, altText },
@@ -65,11 +72,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const url = data.result.variants.find(str => str.endsWith('public'));
     const lqip_url = data.result.variants.find(str => str.endsWith('placeholder'));
 
-    console.log('url', url);
-    console.log('lqip_url', lqip_url);
-
     // Store metadata in D1
-    const { DB } = context.cloudflare.env;
     const preparedStatement = DB.prepare(
       `INSERT INTO images (id, url, lqip_url, category, alt_text) VALUES (?,?,?,?,?)`
     ).bind(crypto.randomUUID(), url, lqip_url, category, altText ?? null);
