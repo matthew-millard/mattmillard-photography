@@ -13,6 +13,7 @@ import { ClientOnly } from './client-only';
 import { TurnstileFallback } from './turnstile';
 import FieldError from './field-error';
 import FormErrors from './form-errors';
+import LightBox from './lightbox';
 
 export {
   DesktopHeader,
@@ -31,4 +32,5 @@ export {
   TurnstileFallback,
   FieldError,
   FormErrors,
+  LightBox,
 };
