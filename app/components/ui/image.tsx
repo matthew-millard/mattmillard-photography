@@ -43,7 +43,7 @@ export default function Image({ image }: { image: ImageProps }) {
         )}
       >
         <div className="w-full h-full flex items-end justify-center">
-          <span className="text-white text-sm md:text-base p-4">{image.alt_text}</span>
+          <span className="text-white text-sm md:text-base font-thin p-4">{image.alt_text}</span>
         </div>
       </div>
     </div>
