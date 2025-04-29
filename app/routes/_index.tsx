@@ -1,7 +1,8 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
+import { useEffect, useRef } from 'react';
 import { PageHeader } from '~/components/layout';
-import { Image } from '~/components/ui';
+import { Image, LightBox } from '~/components/ui';
 
 export interface ImageRecord {
   id: string;
@@ -45,11 +46,13 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   ];
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const selectedImageId = url.searchParams.get('pid');
+
   const { env } = context.cloudflare;
   const { DB } = env;
   const preparedStatement = DB.prepare(`SELECT * FROM images ORDER BY created_at DESC`);
-  // ORDER BY created_at DESC LIMIT 10
   const dbResponse = await preparedStatement.all<ImageRecord>();
 
   if (!dbResponse.success) {
@@ -58,13 +61,25 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
   const MODE = env.MODE;
 
-  const { results } = dbResponse;
+  const { results: images } = dbResponse;
 
-  return { MODE, results };
+  let selectedImage;
+  if (selectedImageId) {
+    selectedImage = images.find(image => image.id === selectedImageId);
+  }
+
+  return { MODE, images, selectedImage };
 }
 
 export default function Index() {
-  const { results: images } = useLoaderData<typeof loader>();
+  const { images, selectedImage } = useLoaderData<typeof loader>();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (selectedImage) {
+      dialogRef.current?.showModal();
+    }
+  }, [selectedImage]);
 
   return (
     <div>
@@ -82,6 +97,10 @@ export default function Index() {
           <p>There is currently no images available</p>
         )}
       </section>
+
+      <LightBox ref={dialogRef}>
+        <img src={selectedImage?.url} alt={selectedImage?.alt_text} />
+      </LightBox>
     </div>
   );
 }
