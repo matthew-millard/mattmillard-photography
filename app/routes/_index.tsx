@@ -97,10 +97,7 @@ export default function Index() {
           <p>There is currently no images available</p>
         )}
       </section>
-
-      <LightBox ref={dialogRef}>
-        <img src={selectedImage?.url} alt={selectedImage?.alt_text} />
-      </LightBox>
+      {selectedImage && <LightBox ref={dialogRef} image={selectedImage} />}
     </div>
   );
 }
