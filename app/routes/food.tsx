@@ -56,10 +56,10 @@ export default function FoodRoute() {
   return (
     <div>
       <PageHeader title="Food" description="A collection of photos taken in restaurant" />
-      <section className="columns-2 md:columns-3 lg:columns-4 gap-4 py-4">
+      <section className="columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 py-4">
         {images && images.length > 0 ? (
           images.map(image => (
-            <div key={image.id} className="break-inside-avoid mb-4">
+            <div key={image.id} className="break-inside-avoid mb-4 md:mb-6">
               <Image image={image} />
             </div>
           ))
