@@ -10,8 +10,20 @@ interface LightBoxProps extends ComponentPropsWithoutRef<'dialog'> {
 
 const LightBox = forwardRef<HTMLDialogElement, LightBoxProps>(({ image, className, ...props }, ref) => {
   const navigate = useNavigate();
+
+  const handleDialogClose = (event: React.MouseEvent<HTMLDialogElement>) => {
+    if (ref && 'current' in ref && event.target === ref.current) {
+      ref.current?.close();
+    }
+  };
   return (
-    <dialog ref={ref} onClose={() => navigate('/')} className={cn('backdrop:bg-card/90', className)} {...props}>
+    <dialog
+      ref={ref}
+      onClose={() => navigate('/')}
+      className={cn('backdrop:bg-card/90', className)}
+      {...props}
+      onClick={e => handleDialogClose(e)}
+    >
       <img src={image?.url} alt={image?.alt_text} />
       <button
         autoFocus

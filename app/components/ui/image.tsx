@@ -45,7 +45,7 @@ export default function Image({ image }: { image: ImageRecord }) {
 
 function ImageOverlay({ alt_text }: Pick<ImageRecord, 'alt_text'>) {
   return (
-    <div className="absolute w-full h-full inset-0 grid items-end bg-black/50 overflow-y-scroll p-4">
+    <div className="absolute w-full h-full inset-0 grid items-end transition-opacity opacity-0 hover:opacity-100 bg-black/50 overflow-y-scroll p-4">
       <P className="text-white/90">{alt_text}</P>
     </div>
   );
