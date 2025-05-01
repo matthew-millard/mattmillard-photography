@@ -4,6 +4,7 @@ import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 import { ImageRecord } from './_index';
 import { useLoaderData } from '@remix-run/react';
 import { Image } from '~/components/ui';
+import { GenericErrorBoundary } from '~/components/error-boundaries';
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { MODE, DB } = context.cloudflare.env;
@@ -12,7 +13,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   const dbResponse = await ps.all<ImageRecord>();
 
   if (!dbResponse.success) {
-    throw new Error('Error gathering images from database');
+    throw new Error('Failed to fetch images from database');
   }
 
   const { results } = dbResponse;
@@ -69,4 +70,8 @@ export default function FoodRoute() {
       </section>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <GenericErrorBoundary />;
 }
