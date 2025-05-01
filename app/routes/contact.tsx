@@ -9,6 +9,7 @@ import { Theme } from '~/components/ui/theme-switch';
 import { useIsPending, useTheme, useFormReset } from '~/hooks';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 import { Turnstile, TurnstileServerValidationResponse } from '@marsidev/react-turnstile';
+import { GenericErrorBoundary } from '~/components/error-boundaries';
 
 const CF_TURNSTILE_KEY = 'cf-turnstile-response';
 const MY_EMAIL = 'contact@mattmillard.photography';
@@ -29,6 +30,38 @@ const ContactFormSchema = z.object({
     .max(1000, { message: 'Must be 1000 characters or less' }),
   [CF_TURNSTILE_KEY]: z.string().optional(),
 });
+
+export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
+  const isProduction = data?.MODE === 'production';
+  const baseUrl = isProduction ? `https://${domain}` : 'http://localhost:5173';
+  const title = `Contact | ${siteName}`;
+  const description =
+    'Get in touch for photography enquiries, collaborations or to find out my availability and pricing.';
+  const url = `${baseUrl}${location.pathname}`;
+  return [
+    // Basic metadata
+    { title },
+    { name: 'description', content: description },
+    { name: 'author', content: author },
+
+    // Add Open Graph
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: description },
+    { property: 'og:site_name', content: siteName },
+    { property: 'og:url', content: url },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: imageUrl },
+    { property: 'og:image:alt', content: altText },
+
+    // X (Twitter) Card Metadata
+    { name: 'twitter:card', content: 'summary' },
+    { name: 'twitter:site', content: '@_MattMillard' },
+    { name: 'twitter:title', content: title },
+    { name: 'twitter:description', content: description },
+    { name: 'twitter:image', content: imageUrl },
+    { name: 'twitter:image:alt', content: altText },
+  ];
+};
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const { MODE, CLOUDFLARE_TURNSTILE_SITE_KEY } = context.cloudflare.env;
@@ -228,34 +261,6 @@ export default function ContactRoute() {
   );
 }
 
-export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
-  const isProduction = data?.MODE === 'production';
-  const baseUrl = isProduction ? `https://${domain}` : 'http://localhost:5173';
-  const title = `Contact | ${siteName}`;
-  const description =
-    'Get in touch for photography enquiries, collaborations or to find out my availability and pricing.';
-  const url = `${baseUrl}${location.pathname}`;
-  return [
-    // Basic metadata
-    { title },
-    { name: 'description', content: description },
-    { name: 'author', content: author },
-
-    // Add Open Graph
-    { property: 'og:title', content: title },
-    { property: 'og:description', content: description },
-    { property: 'og:site_name', content: siteName },
-    { property: 'og:url', content: url },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:image', content: imageUrl },
-    { property: 'og:image:alt', content: altText },
-
-    // X (Twitter) Card Metadata
-    { name: 'twitter:card', content: 'summary' },
-    { name: 'twitter:site', content: '@_MattMillard' },
-    { name: 'twitter:title', content: title },
-    { name: 'twitter:description', content: description },
-    { name: 'twitter:image', content: imageUrl },
-    { name: 'twitter:image:alt', content: altText },
-  ];
-};
+export function ErrorBoundary() {
+  return <GenericErrorBoundary />;
+}

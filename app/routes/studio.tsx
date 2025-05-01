@@ -1,11 +1,11 @@
-import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { LoaderFunctionArgs, MetaFunction, data } from '@remix-run/cloudflare';
 import { PageHeader } from '~/components/layout';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
-
-export async function loader({ context }: LoaderFunctionArgs) {
-  const { MODE } = context.cloudflare.env;
-  return { MODE };
-}
+import { ImageRecord } from './_index';
+import { GenericErrorBoundary } from '~/components/error-boundaries';
+import { Image, LightBox } from '~/components/ui';
+import { useLoaderData } from '@remix-run/react';
+import { useRef } from 'react';
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -38,10 +38,53 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   ];
 };
 
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const selectedImageId = url.searchParams.get('pid');
+
+  const { MODE, DB } = context.cloudflare.env;
+
+  const query = DB.prepare(`SELECT * FROM images WHERE category = ?`).bind('studio');
+  const dbResponse = await query.all<ImageRecord>();
+
+  if (!dbResponse.success) {
+    throw new Error('Failed to fetch images from database');
+  }
+
+  const { results: images } = dbResponse;
+
+  let selectedImage;
+  if (selectedImageId) {
+    selectedImage = images.find(image => image.id === selectedImageId);
+  }
+
+  return data({ MODE, images, selectedImage });
+}
+
 export default function StudioRoute() {
+  const { images, selectedImage } = useLoaderData<typeof loader>();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   return (
-    <section>
-      <PageHeader title="Studio" description="Snaps taken inside the studio" />
-    </section>
+    <div>
+      <section>
+        <PageHeader title="Studio" description="Snaps taken inside the studio" />
+      </section>
+      <section className="columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 py-4">
+        {images && images.length > 0 ? (
+          images.map(image => (
+            <div key={image.id} className="break-inside-avoid mb-4 md:mb-6">
+              <Image image={image} />
+            </div>
+          ))
+        ) : (
+          <p>There is currently no images available</p>
+        )}
+      </section>
+      {selectedImage && <LightBox ref={dialogRef} image={selectedImage} />}
+    </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <GenericErrorBoundary />;
 }
