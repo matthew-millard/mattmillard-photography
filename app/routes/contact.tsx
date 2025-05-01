@@ -107,7 +107,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const outcome: TurnstileServerValidationResponse = await result.json();
 
   if (!outcome.success) {
-    return new Response('The provided Turnstile token was not valid! \n' + JSON.stringify(outcome));
+    throw new Error('The provided Turnstile token was not valid!');
   }
 
   // Send email using MailJet REST API
