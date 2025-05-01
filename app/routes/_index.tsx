@@ -2,6 +2,7 @@ import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { data } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
+import { GenericErrorBoundary } from '~/components/error-boundaries';
 import { PageHeader } from '~/components/layout';
 import { Image, LightBox } from '~/components/ui';
 import { useDialog } from '~/hooks';
@@ -58,7 +59,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const dbResponse = await preparedStatement.all<ImageRecord>();
 
   if (!dbResponse.success) {
-    throw new Error('Error gathering images from database');
+    throw new Error('Failed to fetch images from database.');
   }
 
   const MODE = env.MODE;
@@ -98,4 +99,8 @@ export default function Index() {
       {selectedImage && <LightBox ref={dialogRef} image={selectedImage} />}
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <GenericErrorBoundary />;
 }
