@@ -29,6 +29,7 @@ export default function Image({ image }: { image: ImageRecord }) {
       onFocus={() => setShowOverlay(true)}
       onBlur={() => setShowOverlay(false)}
       className="relative"
+      preventScrollReset
     >
       <img
         ref={targetRef}

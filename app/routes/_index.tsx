@@ -1,9 +1,10 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
 import { data } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { PageHeader } from '~/components/layout';
 import { Image, LightBox } from '~/components/ui';
+import { useDialog } from '~/hooks';
 
 export interface ImageRecord {
   id: string;
@@ -76,11 +77,7 @@ export default function Index() {
   const { images, selectedImage } = useLoaderData<typeof loader>();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    if (selectedImage) {
-      dialogRef.current?.showModal();
-    }
-  }, [selectedImage]);
+  useDialog({ condition: selectedImage, ref: dialogRef });
 
   return (
     <div>

@@ -11,31 +11,31 @@ interface LightBoxProps extends ComponentPropsWithoutRef<'dialog'> {
 const LightBox = forwardRef<HTMLDialogElement, LightBoxProps>(({ image, className, ...props }, ref) => {
   const navigate = useNavigate();
 
-  const handleDialogClose = (event: React.MouseEvent<HTMLDialogElement>) => {
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDialogElement>) => {
     if (ref && 'current' in ref && event.target === ref.current) {
       ref.current?.close();
     }
   };
+
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <dialog
       ref={ref}
-      onClose={() => navigate('/')}
+      onClose={() => navigate('..', { preventScrollReset: true })}
       className={cn('backdrop:bg-card/90', className)}
       {...props}
-      onClick={e => handleDialogClose(e)}
+      onClick={handleBackdropClick}
     >
-      <img src={image?.url} alt={image?.alt_text} />
-      <button
-        autoFocus
-        onClick={() => {
-          if (ref && 'current' in ref) {
-            ref.current?.close();
-          }
-        }}
-        className="p-1 rounded-full absolute top-1 right-1 bg-black/50 text-white/80 text-sm font-thin"
-      >
-        <X />
-      </button>
+      <form method="dialog">
+        <img src={image?.url} alt={image?.alt_text} />
+        <button
+          autoFocus
+          className="p-1 rounded-full absolute top-1 right-1 bg-black/50 text-white/80 text-sm font-thin"
+          aria-label="Close lightbox"
+        >
+          <X />
+        </button>
+      </form>
     </dialog>
   );
 });
