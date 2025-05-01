@@ -1,25 +1,12 @@
-import { LoaderFunctionArgs, MetaFunction } from '@remix-run/cloudflare';
+import { LoaderFunctionArgs, MetaFunction, data } from '@remix-run/cloudflare';
 import { PageHeader } from '~/components/layout';
 import { altText, author, domain, imageUrl, siteName } from '~/metadata';
 import { ImageRecord } from './_index';
 import { useLoaderData } from '@remix-run/react';
-import { Image } from '~/components/ui';
+import { Image, LightBox } from '~/components/ui';
 import { GenericErrorBoundary } from '~/components/error-boundaries';
-
-export async function loader({ context }: LoaderFunctionArgs) {
-  const { MODE, DB } = context.cloudflare.env;
-
-  const ps = DB.prepare(`SELECT * FROM images WHERE category = ?`).bind('food');
-  const dbResponse = await ps.all<ImageRecord>();
-
-  if (!dbResponse.success) {
-    throw new Error('Failed to fetch images from database');
-  }
-
-  const { results } = dbResponse;
-
-  return { MODE, results };
-}
+import { useRef } from 'react';
+import { useDialog } from '~/hooks';
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -52,8 +39,35 @@ export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   ];
 };
 
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const selectedImageId = url.searchParams.get('pid');
+
+  const { MODE, DB } = context.cloudflare.env;
+
+  const query = DB.prepare(`SELECT * FROM images WHERE category = ?`).bind('food');
+  const dbResponse = await query.all<ImageRecord>();
+
+  if (!dbResponse.success) {
+    throw new Error('Failed to fetch images from database');
+  }
+
+  const { results: images } = dbResponse;
+
+  let selectedImage;
+  if (selectedImageId) {
+    selectedImage = images.find(image => image.id === selectedImageId);
+  }
+
+  return data({ MODE, images, selectedImage });
+}
+
 export default function FoodRoute() {
-  const { results: images } = useLoaderData<typeof loader>();
+  const { images, selectedImage } = useLoaderData<typeof loader>();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useDialog({ condition: selectedImage, ref: dialogRef });
+
   return (
     <div>
       <PageHeader title="Food" description="A collection of photos taken in restaurant" />
@@ -68,6 +82,7 @@ export default function FoodRoute() {
           <p>There is currently no images available</p>
         )}
       </section>
+      {selectedImage && <LightBox ref={dialogRef} image={selectedImage} />}
     </div>
   );
 }

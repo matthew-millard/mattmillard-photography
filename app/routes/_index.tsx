@@ -55,8 +55,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const { env } = context.cloudflare;
   const { DB } = env;
-  const preparedStatement = DB.prepare(`SELECT * FROM images ORDER BY created_at DESC`);
-  const dbResponse = await preparedStatement.all<ImageRecord>();
+  const query = DB.prepare(`SELECT * FROM images ORDER BY created_at DESC`);
+  const dbResponse = await query.all<ImageRecord>();
 
   if (!dbResponse.success) {
     throw new Error('Failed to fetch images from database.');
