@@ -6,6 +6,7 @@ import { GenericErrorBoundary } from '~/components/error-boundaries';
 import { Image, LightBox } from '~/components/ui';
 import { useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
+import { useDialog } from '~/hooks';
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -64,6 +65,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function StudioRoute() {
   const { images, selectedImage } = useLoaderData<typeof loader>();
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useDialog({ condition: selectedImage, ref: dialogRef });
   return (
     <div>
       <section>
