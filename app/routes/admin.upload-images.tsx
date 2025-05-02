@@ -112,6 +112,7 @@ export default function UploadImagesRoute() {
             <label htmlFor={fields.category.id}>Choose a category</label>
             <select {...getSelectProps(fields.category)}>
               <option value="">--Select category--</option>
+              <option value="homepage">Homepage</option>
               <option value="food">Food</option>
               <option value="drinks">Drinks</option>
               <option value="people">People</option>

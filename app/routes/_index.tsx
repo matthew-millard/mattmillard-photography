@@ -55,7 +55,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const { env } = context.cloudflare;
   const { DB } = env;
-  const query = DB.prepare(`SELECT * FROM images ORDER BY created_at DESC`);
+  const query = DB.prepare(
+    `
+    SELECT * 
+    FROM images 
+    WHERE category = ? 
+    ORDER BY created_at DESC
+  `
+  ).bind('homepage');
   const dbResponse = await query.all<ImageRecord>();
 
   if (!dbResponse.success) {
