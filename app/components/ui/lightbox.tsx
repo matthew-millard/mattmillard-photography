@@ -21,7 +21,7 @@ const LightBox = forwardRef<HTMLDialogElement, LightBoxProps>(({ image, classNam
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <dialog
       ref={ref}
-      onClose={() => navigate('..', { preventScrollReset: true })}
+      onClose={() => navigate('.', { preventScrollReset: true })}
       className={cn('backdrop:bg-card/90', className)}
       {...props}
       onClick={handleBackdropClick}
