@@ -4,8 +4,10 @@ import { useLoaderData } from '@remix-run/react';
 import { useRef } from 'react';
 import { GenericErrorBoundary } from '~/components/error-boundaries';
 import { PageHeader } from '~/components/layout';
-import { Image, LightBox } from '~/components/ui';
+import { P } from '~/components/typography';
+import { Avatar, Image, LightBox } from '~/components/ui';
 import { useDialog } from '~/hooks';
+import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export interface ImageRecord {
   id: string;
@@ -16,8 +18,6 @@ export interface ImageRecord {
   created_at: string;
   updated_at: string;
 }
-
-import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export const meta: MetaFunction<typeof loader> = ({ location, data }) => {
   const isProduction = data?.MODE === 'production';
@@ -83,7 +83,8 @@ export default function Index() {
   return (
     <div>
       <section>
-        <PageHeader title="Home" description="Food, drink and hospitality photographer base in Ottawa, Canada" />
+        <Avatar src={imageUrl} alt={altText} className="md:hidden" />
+        <PageHeader title="Collection" description="Food, drink and hospitality photographer base in Ottawa, Canada" />
       </section>
       <section className="columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 py-4">
         {images && images.length > 0 ? (
@@ -93,7 +94,7 @@ export default function Index() {
             </div>
           ))
         ) : (
-          <p>There is currently no images available</p>
+          <P>There is currently no images available</P>
         )}
       </section>
       {selectedImage && <LightBox ref={dialogRef} image={selectedImage} />}

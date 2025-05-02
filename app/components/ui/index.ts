@@ -14,6 +14,7 @@ import { TurnstileFallback } from './turnstile';
 import FieldError from './field-error';
 import FormErrors from './form-errors';
 import LightBox from './lightbox';
+import Avatar from './avatar';
 
 export {
   DesktopHeader,
@@ -33,4 +34,5 @@ export {
   FieldError,
   FormErrors,
   LightBox,
+  Avatar,
 };
