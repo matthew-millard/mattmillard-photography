@@ -12,7 +12,7 @@ import { requireAdmin } from '~/.server/auth';
 import { uploadToCloudflareImages } from '~/.server/images';
 import { Button } from '~/components/ui';
 
-const CATEGORIES = ['food', 'drinks', 'people', 'studio', 'interior'] as const;
+const CATEGORIES = ['food', 'drinks', 'people', 'studio', 'interior', 'collection'] as const;
 export type Categories = (typeof CATEGORIES)[number];
 
 const MAX_IMAGE_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -112,7 +112,7 @@ export default function UploadImagesRoute() {
             <label htmlFor={fields.category.id}>Choose a category</label>
             <select {...getSelectProps(fields.category)}>
               <option value="">--Select category--</option>
-              <option value="homepage">Homepage</option>
+              <option value="collection">Collection</option>
               <option value="food">Food</option>
               <option value="drinks">Drinks</option>
               <option value="people">People</option>

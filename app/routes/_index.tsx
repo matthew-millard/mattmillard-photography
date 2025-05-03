@@ -62,7 +62,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     WHERE category = ? 
     ORDER BY created_at DESC
   `
-  ).bind('homepage');
+  ).bind('collection');
   const dbResponse = await query.all<ImageRecord>();
 
   if (!dbResponse.success) {
