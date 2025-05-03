@@ -114,7 +114,7 @@ export default function UploadImagesRoute() {
               <option value="">--Select category--</option>
               <option value="collection">Collection</option>
               <option value="food">Food</option>
-              <option value="drinks">Drinks</option>
+              <option value="drink">Drinks</option>
               <option value="people">People</option>
               <option value="studio">Studio</option>
               <option value="interior">Interior</option>
