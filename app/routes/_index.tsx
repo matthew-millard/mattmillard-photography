@@ -59,10 +59,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     `
     SELECT * 
     FROM images 
-    WHERE category = ? 
-    ORDER BY created_at DESC
+    ORDER BY RANDOM()
+    LIMIT 25
   `
-  ).bind('collection');
+  );
   const dbResponse = await query.all<ImageRecord>();
 
   if (!dbResponse.success) {
