@@ -12,7 +12,7 @@ import { requireAdmin } from '~/.server/auth';
 import { uploadToCloudflareImages } from '~/.server/images';
 import { Button } from '~/components/ui';
 
-const CATEGORIES = ['food', 'drinks', 'people', 'studio', 'interior', 'collection'] as const;
+const CATEGORIES = ['food', 'drink', 'people', 'studio', 'interior', 'collection'] as const;
 export type Categories = (typeof CATEGORIES)[number];
 
 const MAX_IMAGE_FILE_SIZE = 5 * 1024 * 1024; // 5MB
