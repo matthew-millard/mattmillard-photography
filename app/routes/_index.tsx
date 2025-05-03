@@ -60,7 +60,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     SELECT * 
     FROM images 
     ORDER BY RANDOM()
-    LIMIT 25
+    LIMIT 50
   `
   );
   const dbResponse = await query.all<ImageRecord>();
