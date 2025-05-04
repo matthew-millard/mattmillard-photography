@@ -2,11 +2,11 @@ import { useFetcher } from '@remix-run/react';
 import { Trash } from 'lucide-react';
 import { Button } from '~/components/ui';
 
-interface DeleteImageProps {
+interface DeleteImageFormProps {
   id: string;
 }
 
-export default function DeleteImage({ id }: DeleteImageProps) {
+export default function DeleteImageForm({ id }: DeleteImageFormProps) {
   const fetcher = useFetcher();
   return (
     <fetcher.Form method="POST" action={`/admin/delete-image/${id}`}>

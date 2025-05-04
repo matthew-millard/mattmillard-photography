@@ -4,7 +4,7 @@ import { useInViewPort, useIsAdmin } from '~/hooks';
 import { cn } from '~/lib/utils';
 import { ImageRecord } from '~/routes/_index';
 import { P } from '../typography';
-import { DeleteImage } from '~/components/actions';
+import { DeleteImageForm } from '~/components/actions';
 
 export default function Image({ image }: { image: ImageRecord }) {
   const targetRef = useRef<HTMLImageElement>(null);
@@ -46,7 +46,7 @@ export default function Image({ image }: { image: ImageRecord }) {
       </Link>
       {isAdmin && (
         <div className="absolute bottom-0 right-0 p-3">
-          <DeleteImage id={image.id} />
+          <DeleteImageForm id={image.id} />
         </div>
       )}
     </div>

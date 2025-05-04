@@ -1,3 +1,3 @@
-import DeleteImage from './delete-image';
+import DeleteImageForm from './delete-image-form';
 
-export { DeleteImage };
+export { DeleteImageForm };
