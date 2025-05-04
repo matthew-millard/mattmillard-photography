@@ -19,6 +19,7 @@ CREATE TABLE admins(
 -- Create images table
 CREATE TABLE images(
     id TEXT PRIMARY KEY,
+    cloudflare_id TEXT NOT NULL,
     url TEXT NOT NULL,
     lqip_url TEXT NOT NULL,
     alt_text TEXT,

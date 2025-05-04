@@ -46,3 +46,14 @@ export async function uploadToCloudflareImages(file: File, accountId: string, ap
 
   return data;
 }
+
+export async function deleteFromCloudflareImages(id: string, accountId: string, apiToken: string) {
+  const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${apiToken}`,
+    },
+  });
+
+  return response;
+}

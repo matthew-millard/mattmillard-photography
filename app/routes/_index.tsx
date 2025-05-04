@@ -11,6 +11,7 @@ import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
 export interface ImageRecord {
   id: string;
+  cloudflare_id: string;
   url: string;
   lqip_url: string;
   alt_text: string;

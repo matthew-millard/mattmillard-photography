@@ -64,25 +64,61 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const { category, files, altText } = submission.value;
 
+  const results = [];
   for (const file of files) {
-    const data = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
-      metadata: { category: category as Categories, altText },
-    });
+    try {
+      const data = await uploadToCloudflareImages(file, CLOUDFLARE_IMAGES_ACCOUNT_ID, CLOUDFLARE_IMAGES_API_TOKEN, {
+        metadata: { category: category as Categories, altText },
+      });
 
-    const url = data.result.variants.find(str => str.endsWith('public'));
-    const lqip_url = data.result.variants.find(str => str.endsWith('placeholder'));
+      const url = data.result.variants.find(str => str.endsWith('public'));
+      const lqip_url = data.result.variants.find(str => str.endsWith('placeholder'));
 
-    // Store metadata in D1
-    const preparedStatement = DB.prepare(
-      `INSERT INTO images (id, url, lqip_url, category, alt_text) VALUES (?,?,?,?,?)`
-    ).bind(crypto.randomUUID(), url, lqip_url, category, altText ?? null);
+      if (!url || !lqip_url) {
+        throw new Error('Failed to get image URLs from Cloudflare');
+      }
 
-    const dbResponse = await preparedStatement.run();
+      // Store metadata in D1
+      const preparedStatement = DB.prepare(
+        `INSERT INTO images (id, cloudflare_id, url, lqip_url, category, alt_text) VALUES (?,?,?,?,?,?)`
+      ).bind(crypto.randomUUID(), data.result.id, url, lqip_url, category, altText ?? null);
 
-    console.log('dbResponse', dbResponse);
+      const dbResponse = await preparedStatement.run();
+
+      if (!dbResponse.success) {
+        throw new Error(`Failed to upload image to database: ${dbResponse.error}`);
+      }
+
+      results.push({ success: true, filename: file.name });
+    } catch (error) {
+      console.error(`Error uploading ${file.name}:`, error);
+      results.push({
+        success: false,
+        filename: file.name,
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
+      });
+    }
   }
 
-  return {};
+  // Check if any uploads failed
+  const failedUploads = results.filter(result => !result.success);
+  if (failedUploads.length > 0) {
+    return new Response(
+      JSON.stringify({
+        message: 'Some images failed to upload',
+        results,
+      }),
+      { status: 207 } // 207 Multi-Status
+    );
+  }
+
+  return new Response(
+    JSON.stringify({
+      message: 'All images uploaded successfully',
+      results,
+    }),
+    { status: 200 }
+  );
 }
 
 export default function UploadImagesRoute() {
