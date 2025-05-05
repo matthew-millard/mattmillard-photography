@@ -31,18 +31,20 @@ export default function Image({ image }: { image: ImageRecord }) {
         onMouseLeave={() => setShowOverlay(false)}
         onFocus={() => setShowOverlay(true)}
         onBlur={() => setShowOverlay(false)}
-        className="relative"
+        className="relative block"
         preventScrollReset
       >
-        <img
-          ref={targetRef}
-          data-src={image.url}
-          id={image.id}
-          src={image.lqip_url}
-          alt={image.alt_text ?? undefined}
-          className={cn('w-full')}
-        />
-        {showOverlay && <ImageOverlay alt_text={image.alt_text} />}
+        <div className="relative w-full bg-muted">
+          <img
+            ref={targetRef}
+            data-src={image.url}
+            id={image.id}
+            src={image.lqip_url}
+            alt={image.alt_text ?? undefined}
+            className={cn('w-full h-auto')}
+          />
+          {showOverlay && <ImageOverlay alt_text={image.alt_text} />}
+        </div>
       </Link>
       {isAdmin && (
         <div className="absolute bottom-0 right-0 p-3">
