@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { GenericErrorBoundary } from '~/components/error-boundaries';
 import { PageHeader } from '~/components/layout';
 import { P } from '~/components/typography';
-import { Avatar, Image, LightBox } from '~/components/ui';
+import { Image, LightBox } from '~/components/ui';
 import { useDialog } from '~/hooks';
 import { altText, author, domain, imageUrl, siteName, title } from '~/metadata';
 
