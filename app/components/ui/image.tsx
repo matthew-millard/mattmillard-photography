@@ -10,6 +10,7 @@ export default function Image({ image }: { image: ImageRecord }) {
   const targetRef = useRef<HTMLImageElement>(null);
   const inViewPort = useInViewPort(targetRef, { threshold: 0.2 });
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const isAdmin = useIsAdmin();
 
   //   Once the image has come into viewport, swap the lqip_url (blurred) for the high res url. Then remove the data-src attribute
@@ -42,11 +43,12 @@ export default function Image({ image }: { image: ImageRecord }) {
             src={image.lqip_url}
             alt={image.alt_text ?? undefined}
             className={cn('w-full h-auto')}
+            onLoad={() => setIsLoaded(true)}
           />
           {showOverlay && <ImageOverlay alt_text={image.alt_text} />}
         </div>
       </Link>
-      {isAdmin && (
+      {isAdmin && isLoaded && (
         <div className="absolute bottom-0 right-0 p-3">
           <DeleteImageForm id={image.id} />
         </div>
