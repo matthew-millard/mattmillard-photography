@@ -90,7 +90,7 @@ export default function Index() {
   return (
     <div>
       <section>
-        <Avatar src={imageUrl} alt={altText} className="md:hidden my-3 ml-2" />
+        {/* <Avatar src={imageUrl} alt={altText} className="md:hidden my-3 ml-2" /> */}
         <PageHeader title="Collection" description="Food, drink and hospitality photographer based in Ottawa, Canada" />
       </section>
       <section className="columns-2 md:columns-3 lg:columns-4 gap-4 md:gap-6 py-4">
